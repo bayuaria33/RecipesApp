@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,16 @@ import {MainStyle} from '../../AppStyles';
 import {loginUser} from '../../storages/actions/authAction';
 import {useDispatch, useSelector} from 'react-redux';
 export default function LoginView({navigation}) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const formData = {
+    email: email,
+    password: password,
+  };
+
+  const loginSubmit = () => {
+    dispatch(loginUser(formData));
+  };
   const dispatch = useDispatch();
   const auth = useSelector(state => state.auth);
   return (
@@ -29,17 +39,22 @@ export default function LoginView({navigation}) {
         <Text style={MainStyle.headerText}>Welcome !</Text>
         <Text style={MainStyle.subHeaderText}>Login to existing account </Text>
         <Text style={AuthStyle.label}>Email</Text>
-        <TextInput style={AuthStyle.input} placeholder="Email" />
+        <TextInput
+          style={AuthStyle.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={value => setEmail(value)}
+        />
         <Text style={AuthStyle.label}>Password</Text>
         <TextInput
           style={AuthStyle.input}
           placeholder="Password"
           secureTextEntry={true}
+          value={password}
+          onChangeText={value => setPassword(value)}
         />
         <Text style={AuthStyle.subHeaderText}>Forgot Password?</Text>
-        <TouchableOpacity
-          style={AuthStyle.btn}
-          onPress={() => dispatch(loginUser())}>
+        <TouchableOpacity style={AuthStyle.btn} onPress={loginSubmit}>
           <Text style={AuthStyle.btnlabel}>
             {auth.isLoading ? (
               <ActivityIndicator size="large" color="white" />

@@ -1,13 +1,7 @@
 import axios from 'axios';
 
-const dummyLogin = {
-  email: 'dxc80943@omeie.com',
-  password: '123',
-};
-
 const REACT_APP_API_URL = 'https://rich-colt-cuff.cyclic.app/';
 export const loginUser = data => async dispatch => {
-  data = dummyLogin;
   try {
     dispatch({type: 'USER_LOGIN_PENDING'});
     const result = await axios.post(`${REACT_APP_API_URL}/auth/login`, data);

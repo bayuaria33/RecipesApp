@@ -17,7 +17,7 @@ export default function ProfileView() {
   return (
     <View style={MainStyle.container}>
       <View style={styles.main}>
-        {auth.data.data === null ? (
+        {auth.data.data.photo === null ? (
           <Image
             style={styles.img}
             source={{
