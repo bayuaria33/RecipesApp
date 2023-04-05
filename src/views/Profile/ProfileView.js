@@ -9,17 +9,32 @@ import {
 } from 'react-native';
 import {MainStyle} from '../../AppStyles';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {useDispatch, useSelector} from 'react-redux';
+import {logoutUser} from '../../storages/actions/authAction';
 export default function ProfileView() {
+  const auth = useSelector(state => state.auth);
+  const dispatch = useDispatch();
   return (
     <View style={MainStyle.container}>
       <View style={styles.main}>
-        <Image
-          style={styles.img}
-          source={{
-            uri: 'https://res.cloudinary.com/dedas1ohg/image/upload/v1680659284/recipes_images/18f59bbdfe6e4e4901e5ee2ec3b54bb1_o4e3qy.jpg',
-          }}
-        />
-        <Text style={styles.namelabel}>User Name</Text>
+        {auth.data.data === null ? (
+          <Image
+            style={styles.img}
+            source={{
+              uri: 'https://res.cloudinary.com/dedas1ohg/image/upload/v1680685005/peworld_images/Default_pfp_odp1oi_ockrk2.png',
+            }}
+          />
+        ) : (
+          <Image
+            style={styles.img}
+            source={{
+              uri: auth.data.data?.photo,
+            }}
+          />
+        )}
+        <Text style={styles.namelabel}>
+          {auth.data.data?.fullname ?? 'fullname'}
+        </Text>
       </View>
       <View style={styles.card}>
         <TouchableOpacity style={styles.tabTop}>
@@ -37,6 +52,12 @@ export default function ProfileView() {
         <TouchableOpacity style={styles.tab}>
           <Icon name="thumbs-up-outline" color={'#EFC81A'} size={25} />
           <Text style={styles.label}>Liked Recipe</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.tab}
+          onPress={() => dispatch(logoutUser())}>
+          <Icon name="exit-outline" color={'maroon'} size={25} />
+          <Text style={styles.label}>Logout</Text>
         </TouchableOpacity>
       </View>
     </View>

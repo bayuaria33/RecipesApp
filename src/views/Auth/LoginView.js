@@ -6,10 +6,15 @@ import {
   ImageBackground,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import {AuthStyle} from './authStyles';
 import {MainStyle} from '../../AppStyles';
+import {loginUser} from '../../storages/actions/authAction';
+import {useDispatch, useSelector} from 'react-redux';
 export default function LoginView({navigation}) {
+  const dispatch = useDispatch();
+  const auth = useSelector(state => state.auth);
   return (
     <View style={MainStyle.container}>
       <ImageBackground
@@ -34,8 +39,14 @@ export default function LoginView({navigation}) {
         <Text style={AuthStyle.subHeaderText}>Forgot Password?</Text>
         <TouchableOpacity
           style={AuthStyle.btn}
-          onPress={() => navigation.navigate('Main')}>
-          <Text style={AuthStyle.btnlabel}>LOGIN</Text>
+          onPress={() => dispatch(loginUser())}>
+          <Text style={AuthStyle.btnlabel}>
+            {auth.isLoading ? (
+              <ActivityIndicator size="large" color="white" />
+            ) : (
+              'LOGIN'
+            )}
+          </Text>
         </TouchableOpacity>
         <Text>
           <Text style={MainStyle.subHeaderText}>Don't have an account? </Text>

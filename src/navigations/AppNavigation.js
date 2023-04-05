@@ -13,6 +13,7 @@ import DetailView from '../views/Recipe/detailView';
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import {useSelector} from 'react-redux';
 const Tab = createBottomTabNavigator();
 function TabNavigator() {
   return (
@@ -94,36 +95,40 @@ function TabNavigator() {
 
 const Stack = createNativeStackNavigator();
 export default function MainNavigator() {
+  const auth = useSelector(state => state.auth);
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
         {/* Auth Group */}
-        <Stack.Group>
-          <Stack.Screen
-            name="Login"
-            component={LoginView}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="Register"
-            component={RegisterView}
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack.Group>
+        {auth.data == null ? (
+          <>
+            <Stack.Screen
+              name="Login"
+              component={LoginView}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="Register"
+              component={RegisterView}
+              options={{
+                headerShown: false,
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <Stack.Screen
+              name="Main"
+              component={TabNavigator}
+              options={{
+                headerShown: false,
+              }}
+            />
+          </>
+        )}
         {/* Main Group */}
-        <Stack.Group>
-          <Stack.Screen
-            name="Main"
-            component={TabNavigator}
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>
   );
