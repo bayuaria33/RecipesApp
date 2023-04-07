@@ -11,7 +11,7 @@ import {MainStyle} from '../../AppStyles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useDispatch, useSelector} from 'react-redux';
 import {logoutUser} from '../../storages/actions/authAction';
-export default function ProfileView() {
+export default function ProfileView({navigation}) {
   const auth = useSelector(state => state.auth);
   const dispatch = useDispatch();
   return (
@@ -41,7 +41,9 @@ export default function ProfileView() {
           <Icon name="person-outline" color={'#EFC81A'} size={25} />
           <Text style={styles.label}>Edit Profile</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.tab}>
+        <TouchableOpacity
+          style={styles.tab}
+          onPress={() => navigation.navigate('MyMenu')}>
           <Icon name="book-outline" color={'#EFC81A'} size={25} />
           <Text style={styles.label}>My Recipe</Text>
         </TouchableOpacity>

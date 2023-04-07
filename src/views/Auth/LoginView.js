@@ -53,6 +53,8 @@ export default function LoginView({navigation}) {
           value={password}
           onChangeText={value => setPassword(value)}
         />
+        {auth.isError && <Text>Wrong Email / Password</Text>}
+
         <Text style={AuthStyle.subHeaderText}>Forgot Password?</Text>
         <TouchableOpacity style={AuthStyle.btn} onPress={loginSubmit}>
           <Text style={AuthStyle.btnlabel}>

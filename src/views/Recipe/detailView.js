@@ -1,34 +1,101 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   Dimensions,
   ImageBackground,
+  ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
 import {MainStyle} from '../../AppStyles';
-export default function DetailView() {
+import axios from 'axios';
+import {useSelector} from 'react-redux';
+export default function DetailView({route, navigation}) {
+  const {itemId} = route.params;
+  const id = JSON.stringify(itemId);
+  const auth = useSelector(state => state.auth);
+  const [data, setData] = useState('');
+  useEffect(() => {
+    const config = {
+      headers: {
+        Authorization: 'Bearer ' + auth.data.data.accessToken,
+      },
+    };
+    const fetchRecipes = async () => {
+      try {
+        const result = await axios.get(
+          'https://rich-colt-cuff.cyclic.app/recipes/' + id,
+          config,
+        );
+        let res = result.data.data;
+        res && setData(res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchRecipes();
+  }, [auth.data.data.accessToken, id]);
+
+  if (!data) {
+    return (
+      <View style={MainStyle.container}>
+        <View style={MainStyle.main}>
+          <ActivityIndicator
+            size={'large'}
+            color={'#EFC81A'}
+            style={{alignSelf: 'center'}}
+          />
+        </View>
+      </View>
+    );
+  }
+  const recipe = data[0];
   return (
     <View style={MainStyle.container}>
       <ImageBackground
         style={styles.main}
         source={{
-          uri: 'https://res.cloudinary.com/dedas1ohg/image/upload/v1680575811/recipes_images/96bbf7e44d119d80a61c4894c5c96c74_ibqm5a.jpg',
+          uri: recipe.photo,
         }}
       />
       <View style={styles.titlebox}>
-        <Text style={styles.title}>Sandwich With Egg</Text>
-        <Text style={styles.subtitle}>By chef</Text>
+        <View
+          style={{
+            width: 240,
+            maxHeight: 64,
+          }}>
+          <View>
+            <Text style={styles.title}>{recipe.title}</Text>
+          </View>
+          <Text style={styles.subtitle}>By {recipe.author}</Text>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            maxHeight: 64,
+            alignItems: 'center',
+            marginStart: 16,
+          }}>
+          <TouchableOpacity style={styles.btn}>
+            <Icon name="bookmark" size={23} color="#E9E9E8" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.btn}>
+            <Icon name="thumbs-up" size={23} color="#E9E9E8" />
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={styles.card}>
-        <View style={{padding: 10}}>
-          <Text style={{marginTop: 10}}>Ingredients</Text>
-          <Text style={{marginTop: 10}}>
-            - 2 slices whole-grain bread (bakery-fresh recommended) - 1
-            tablespoon hummus - 2 slices tomato - 1/2 small cucumber, thinly
-            sliced lengthwise - 1 slice low-fat cheese
-          </Text>
+        <View
+          style={{
+            padding: 10,
+            justifyContent: 'flex-start',
+            alignSelf: 'flex-start',
+          }}>
+          <Text style={{marginTop: 10}}>Ingredients: </Text>
+          <Text style={{marginTop: 10}}>{recipe.ingredients}</Text>
         </View>
       </View>
     </View>
@@ -78,10 +145,11 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     marginLeft: 16,
     alignSelf: 'flex-start',
+    flexDirection: 'row',
   },
   title: {
     color: 'white',
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: '700',
     lineHeight: 48,
   },
@@ -90,5 +158,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '900',
     lineHeight: 18,
+  },
+  btn: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginHorizontal: 10,
+    backgroundColor: '#EFC81A',
+    height: 36,
+    width: 36,
+    borderRadius: 16,
   },
 });

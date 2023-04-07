@@ -1,25 +1,87 @@
-import React from 'react';
-import {View, TextInput, StyleSheet, Image, Text} from 'react-native';
+/* eslint-disable react-native/no-inline-styles */
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  Image,
+  Text,
+  ScrollView,
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native';
 import {MainStyle} from '../../AppStyles';
-export default function SearchView() {
+import {useSelector} from 'react-redux';
+import axios from 'axios';
+export default function SearchView({navigation}) {
+  const auth = useSelector(state => state.auth);
+  const [data, setData] = useState('');
+  useEffect(() => {
+    const config = {
+      headers: {
+        Authorization: 'Bearer ' + auth.data.data.accessToken,
+      },
+    };
+    const fetchRecipes = async () => {
+      try {
+        const result = await axios.get(
+          'https://rich-colt-cuff.cyclic.app/recipes/',
+          config,
+        );
+        let res = result.data.data;
+        res && setData(res);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchRecipes();
+  }, [auth.data.data.accessToken]);
+
+  if (!data) {
+    return (
+      <View style={MainStyle.container}>
+        <View style={MainStyle.main}>
+          <ActivityIndicator
+            size={'large'}
+            color={'#EFC81A'}
+            style={{alignSelf: 'center'}}
+          />
+        </View>
+      </View>
+    );
+  }
   return (
     <View style={MainStyle.container}>
       <View style={MainStyle.main}>
         <TextInput style={styles.searchBar} placeholder="Search for Recipes">
           {''}
         </TextInput>
-        <View style={styles.item}>
-          <Image
-            style={styles.img}
-            source={{
-              uri: 'https://res.cloudinary.com/dedas1ohg/image/upload/v1680575811/recipes_images/96bbf7e44d119d80a61c4894c5c96c74_ibqm5a.jpg',
-            }}
-          />
-          <View>
-            <Text style={styles.title}>Recipe Title</Text>
-            <Text style={styles.title}>4.3 Seafood</Text>
-          </View>
-        </View>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {data?.map((item, index) => {
+            return (
+              <TouchableOpacity
+                style={styles.item}
+                key={index}
+                onPress={() =>
+                  navigation.navigate('Detail', {
+                    itemId: item.id,
+                  })
+                }>
+                <Image
+                  style={styles.img}
+                  source={{
+                    uri: item.photo,
+                  }}
+                />
+                <View>
+                  <Text style={styles.title}>{item.title}</Text>
+                  <Text style={styles.title}>{item.category}</Text>
+                  <Text style={styles.title}>By {item.author}</Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
       </View>
     </View>
   );
@@ -39,7 +101,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   item: {
-    marginVertical: 23,
+    marginTop: 16,
     paddingLeft: 10,
     width: 343,
     height: 96,

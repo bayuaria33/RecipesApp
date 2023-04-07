@@ -47,19 +47,8 @@ function TabNavigator() {
         component={MyRecipeView}
         options={{
           tabBarLabel: 'My Menu',
-          tabBarIcon: ({color, size}) => (
-            <Icon name="menu-outline" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileView}
-        options={{
-          tabBarLabel: 'Profile',
-          tabBarIcon: ({color, size}) => (
-            <Icon name="person-outline" color={color} size={size} />
-          ),
+          tabBarButton: () => null,
+          tabBarVisible: true,
         }}
       />
       <Tab.Screen
@@ -76,8 +65,19 @@ function TabNavigator() {
         component={SearchView}
         options={{
           headerShown: false,
-          tabBarButton: () => null,
-          tabBarVisible: true,
+          tabBarIcon: ({color, size}) => (
+            <Icon name="search" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileView}
+        options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({color, size}) => (
+            <Icon name="person-outline" color={color} size={size} />
+          ),
         }}
       />
       <Tab.Screen
