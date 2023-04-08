@@ -6,38 +6,23 @@ import {
   StyleSheet,
   Image,
   Text,
-  ScrollView,
   ActivityIndicator,
   TouchableOpacity,
+  FlatList,
 } from 'react-native';
 import {MainStyle} from '../../AppStyles';
-import {useSelector} from 'react-redux';
-import axios from 'axios';
+import {useSelector, useDispatch} from 'react-redux';
+import {getAllRecipe} from '../../storages/actions/recipeAction';
 export default function SearchView({navigation}) {
-  const auth = useSelector(state => state.auth);
-  const [data, setData] = useState('');
+  const token = useSelector(state => state.auth.data.data.accessToken);
+  const data = useSelector(state => state.all);
+  const [search, setSearch] = useState('');
+  const [searchText, setSearchText] = useState('');
+  const dispatch = useDispatch();
   useEffect(() => {
-    const config = {
-      headers: {
-        Authorization: 'Bearer ' + auth.data.data.accessToken,
-      },
-    };
-    const fetchRecipes = async () => {
-      try {
-        const result = await axios.get(
-          'https://rich-colt-cuff.cyclic.app/recipes/',
-          config,
-        );
-        let res = result.data.data;
-        res && setData(res);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchRecipes();
-  }, [auth.data.data.accessToken]);
-
-  if (!data) {
+    dispatch(getAllRecipe(token, search));
+  }, [dispatch, token, search]);
+  if (data.isLoading === true) {
     return (
       <View style={MainStyle.container}>
         <View style={MainStyle.main}>
@@ -53,35 +38,41 @@ export default function SearchView({navigation}) {
   return (
     <View style={MainStyle.container}>
       <View style={MainStyle.main}>
-        <TextInput style={styles.searchBar} placeholder="Search for Recipes">
-          {''}
-        </TextInput>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {data?.map((item, index) => {
-            return (
-              <TouchableOpacity
-                style={styles.item}
-                key={index}
-                onPress={() =>
-                  navigation.navigate('Detail', {
-                    itemId: item.id,
-                  })
-                }>
-                <Image
-                  style={styles.img}
-                  source={{
-                    uri: item.photo,
-                  }}
-                />
-                <View>
-                  <Text style={styles.title}>{item.title}</Text>
-                  <Text style={styles.title}>{item.category}</Text>
-                  <Text style={styles.title}>By {item.author}</Text>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
+        <TextInput
+          style={styles.searchBar}
+          placeholder="Search for Recipes"
+          onChangeText={value => setSearchText(value)}
+          onSubmitEditing={() => {
+            setSearch(searchText);
+            setSearchText('');
+          }}
+        />
+        <FlatList
+          keyExtractor={item => item.id}
+          showsVerticalScrollIndicator={false}
+          data={data.data}
+          renderItem={({item}) => (
+            <TouchableOpacity
+              style={styles.item}
+              onPress={() =>
+                navigation.navigate('Detail', {
+                  itemId: item.id,
+                })
+              }>
+              <Image
+                style={styles.img}
+                source={{
+                  uri: item.photo,
+                }}
+              />
+              <View>
+                <Text style={styles.title}>{item.title}</Text>
+                <Text style={styles.title}>{item.category}</Text>
+                <Text style={styles.title}>By {item.author}</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
       </View>
     </View>
   );
@@ -110,6 +101,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
+    elevation: 3,
   },
   img: {
     width: 80,

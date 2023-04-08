@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -11,35 +11,18 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import {MainStyle} from '../../AppStyles';
-import axios from 'axios';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {getDetailRecipe} from '../../storages/actions/recipeAction';
 export default function DetailView({route, navigation}) {
   const {itemId} = route.params;
   const id = JSON.stringify(itemId);
-  const auth = useSelector(state => state.auth);
-  const [data, setData] = useState('');
+  const token = useSelector(state => state.auth.data.data.accessToken);
+  const data = useSelector(state => state.detail);
+  const dispatch = useDispatch();
   useEffect(() => {
-    const config = {
-      headers: {
-        Authorization: 'Bearer ' + auth.data.data.accessToken,
-      },
-    };
-    const fetchRecipes = async () => {
-      try {
-        const result = await axios.get(
-          'https://rich-colt-cuff.cyclic.app/recipes/' + id,
-          config,
-        );
-        let res = result.data.data;
-        res && setData(res);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchRecipes();
-  }, [auth.data.data.accessToken, id]);
-
-  if (!data) {
+    dispatch(getDetailRecipe(token, id));
+  }, [dispatch, id, token]);
+  if (data.isLoading === true) {
     return (
       <View style={MainStyle.container}>
         <View style={MainStyle.main}>
@@ -52,7 +35,17 @@ export default function DetailView({route, navigation}) {
       </View>
     );
   }
-  const recipe = data[0];
+  if (data.data === null) {
+    return (
+      <View style={MainStyle.container}>
+        <View style={MainStyle.main}>
+          <Text>null</Text>
+        </View>
+      </View>
+    );
+  }
+
+  const recipe = data.data[0];
   return (
     <View style={MainStyle.container}>
       <ImageBackground

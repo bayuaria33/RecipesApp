@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height,
     width: 367,
     alignItems: 'center',
+    elevation: 10,
   },
   tabTop: {
     borderTopLeftRadius: 15,

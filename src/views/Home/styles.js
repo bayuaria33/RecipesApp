@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
     width: 260,
     marginLeft: 10,
     borderRadius: 10,
+    elevation: 3,
   },
   img: {
     height: 158,

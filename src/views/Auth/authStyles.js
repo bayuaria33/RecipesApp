@@ -23,6 +23,7 @@ export const AuthStyle = StyleSheet.create({
     height: Dimensions.get('window').height,
     width: 367,
     alignItems: 'center',
+    elevation: 10,
   },
   input: {
     marginBottom: 16,
@@ -65,6 +66,7 @@ export const AuthStyle = StyleSheet.create({
     fontWeight: '500',
     lineHeight: 24,
     color: 'white',
+    alignSelf: 'center',
   },
   shadow: {
     shadowColor: '#000000',

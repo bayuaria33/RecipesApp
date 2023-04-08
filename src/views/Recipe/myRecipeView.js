@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,36 +7,19 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
-  ScrollView,
+  FlatList,
 } from 'react-native';
 import {MainStyle} from '../../AppStyles';
-import {useSelector} from 'react-redux';
-import axios from 'axios';
+import {useDispatch, useSelector} from 'react-redux';
+import {getMyRecipe} from '../../storages/actions/recipeAction';
 export default function MyRecipeView({navigation}) {
-  const auth = useSelector(state => state.auth);
-  const [data, setData] = useState('');
+  const token = useSelector(state => state.auth.data.data.accessToken);
+  const data = useSelector(state => state.my);
+  const dispatch = useDispatch();
   useEffect(() => {
-    const config = {
-      headers: {
-        Authorization: 'Bearer ' + auth.data.data.accessToken,
-      },
-    };
-    const fetchRecipes = async () => {
-      try {
-        const result = await axios.get(
-          'https://rich-colt-cuff.cyclic.app/recipes/my-recipe',
-          config,
-        );
-        let res = result.data.data;
-        res && setData(res);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchRecipes();
-  }, [auth.data.data.accessToken]);
-
-  if (!data) {
+    dispatch(getMyRecipe(token));
+  }, [dispatch, token]);
+  if (data.isLoading === true) {
     return (
       <View style={MainStyle.container}>
         <View style={MainStyle.main}>
@@ -53,41 +36,32 @@ export default function MyRecipeView({navigation}) {
     <View style={MainStyle.container}>
       <View style={MainStyle.main}>
         <Text style={MainStyle.headerText}>My Recipes</Text>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {data?.map((item, index) => {
-            return (
-              <TouchableOpacity
-                style={styles.item}
-                key={index}
-                onPress={() =>
-                  navigation.navigate('Detail', {
-                    itemId: item.id,
-                  })
-                }>
-                <Image
-                  style={styles.img}
-                  source={{
-                    uri: item.photo,
-                  }}
-                />
-                <View>
-                  <Text style={styles.title}>{item.title}</Text>
-                  <Text style={styles.title}>{item.category}</Text>
-                  <View style={{flexDirection: 'row'}}>
-                    <TouchableOpacity
-                      style={[styles.btn, {backgroundColor: '#30C0F3'}]}>
-                      <Text style={styles.btntext}>Edit</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={[styles.btn, {backgroundColor: '#F57E71'}]}>
-                      <Text style={styles.btntext}>Delete</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
+        <FlatList
+          keyExtractor={item => item.id}
+          showsVerticalScrollIndicator={false}
+          data={data.data}
+          renderItem={({item}) => (
+            <TouchableOpacity
+              style={styles.item}
+              onPress={() =>
+                navigation.navigate('Detail', {
+                  itemId: item.id,
+                })
+              }>
+              <Image
+                style={styles.img}
+                source={{
+                  uri: item.photo,
+                }}
+              />
+              <View>
+                <Text style={styles.title}>{item.title}</Text>
+                <Text style={styles.title}>{item.category}</Text>
+                <Text style={styles.title}>By {item.author}</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
       </View>
     </View>
   );
@@ -116,6 +90,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
+    elevation: 3,
   },
   img: {
     width: 80,
