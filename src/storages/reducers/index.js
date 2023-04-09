@@ -6,6 +6,7 @@ import getMyReducer from './myRecipeReducer';
 import detailReducer from './detailRecipeReducer';
 import addReducer from './addRecipeReducer';
 import deleteReducer from './deleteRecipeReducer';
+import editReducer from './editRecipeReducer';
 const appReducers = combineReducers({
   auth: authReducer,
   regis: regisReducer,
@@ -14,6 +15,7 @@ const appReducers = combineReducers({
   detail: detailReducer,
   add: addReducer,
   del: deleteReducer,
+  edit: editReducer,
 });
 
 export default appReducers;

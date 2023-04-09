@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-alert */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -15,35 +15,54 @@ import {Picker} from '@react-native-picker/picker';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {MainStyle} from '../../AppStyles';
 import {useDispatch, useSelector} from 'react-redux';
-import {addRecipe} from '../../storages/actions/recipeAction';
-export default function AddView() {
+import {editRecipe, getDetailRecipe} from '../../storages/actions/recipeAction';
+export default function EditView({route}) {
   const dispatch = useDispatch();
-  const [filePath, setFilePath] = useState(null);
+  const {itemId} = route.params;
+  const id = JSON.stringify(itemId);
+  const token = useSelector(state => state.auth.data.data.accessToken);
+  const users_id = useSelector(state => state.auth.data.data.id);
+  const data = useSelector(state => state.edit);
+  const detail = useSelector(state => state.detail.data[0]);
+  const [filePath, setFilePath] = useState(detail.photo);
   const [fileName, setFileName] = useState(null);
   const [fileType, setFileType] = useState(null);
 
-  const token = useSelector(state => state.auth.data.data.accessToken);
-  const users_id = useSelector(state => state.auth.data.data.id);
-  const data = useSelector(state => state.add);
-  const [title, setTitle] = useState();
-  const [ingredients, setIngredients] = useState();
-  const [categories_id, setCategories_id] = useState();
-
+  const [title, setTitle] = useState(detail.title);
+  const [ingredients, setIngredients] = useState(detail.ingredients);
+  const [categories_id, setCategories_id] = useState(detail.categories_id);
   const postForm = e => {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('ingredients', ingredients);
     formData.append('categories_id', parseInt(categories_id, 10));
     formData.append('users_id', users_id);
-    formData.append('photo', {
-      uri: filePath,
-      type: fileType,
-      name: fileName,
-    });
+    formData.append(
+      'photo',
+      fileName
+        ? {
+            uri: filePath,
+            type: fileType,
+            name: fileName,
+          }
+        : detail.photo,
+    );
     console.log(formData);
-    dispatch(addRecipe(token, formData));
+    dispatch(editRecipe(token, formData, id));
   };
 
+  useEffect(() => {
+    dispatch(getDetailRecipe(token, id));
+  }, [dispatch, id, token]);
+
+  useEffect(() => {
+    if (detail) {
+      setTitle(detail.title);
+      setIngredients(detail.ingredients);
+      setFilePath(detail.photo);
+      setCategories_id(detail.categories_id);
+    }
+  }, [detail]);
   const chooseFile = type => {
     let options = {
       mediaType: type,
@@ -78,7 +97,18 @@ export default function AddView() {
     <View style={MainStyle.container}>
       <View style={MainStyle.main}>
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Text style={MainStyle.headerText}>Add Your Recipe</Text>
+          <Text style={MainStyle.headerText}>Edit Recipe</Text>
+          {detail.isLoading && (
+            <View style={{marginVertical: 16}}>
+              <View>
+                <ActivityIndicator
+                  size={'large'}
+                  color={'#EFC81A'}
+                  style={{alignSelf: 'center'}}
+                />
+              </View>
+            </View>
+          )}
           <Text style={styles.label}>Title</Text>
           <View>
             <TextInput
@@ -143,9 +173,11 @@ export default function AddView() {
             <Picker.Item label="Breakfast" value={2} />
           </Picker>
           {data.isSuccess && (
-            <Text style={styles.label}>Add Recipe Successful!</Text>
+            <Text style={styles.label}>Edit Recipe Successful!</Text>
           )}
-          {data.isError && <Text style={styles.label}>Add Recipe Failed.</Text>}
+          {data.isError && (
+            <Text style={styles.label}>Edit Recipe Failed.</Text>
+          )}
           <TouchableOpacity style={styles.btn} onPress={postForm}>
             <Text style={styles.btnlabel}>
               {data.isLoading ? (

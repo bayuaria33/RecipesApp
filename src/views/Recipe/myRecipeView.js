@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   FlatList,
   Alert,
+  RefreshControl,
 } from 'react-native';
 import {MainStyle} from '../../AppStyles';
 import {useDispatch, useSelector} from 'react-redux';
@@ -17,6 +18,7 @@ export default function MyRecipeView({navigation}) {
   const token = useSelector(state => state.auth.data.data.accessToken);
   const data = useSelector(state => state.my);
   const deleteState = useSelector(state => state.del);
+  const [refresh, setRefresh] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getMyRecipe(token));
@@ -41,6 +43,15 @@ export default function MyRecipeView({navigation}) {
         },
       ],
     );
+  const refreshHandler = () => {
+    setRefresh(true);
+    setTimeout(() => {
+      dispatch(getMyRecipe(token)).then(() => {
+        setRefresh(false);
+      });
+    }, 1000);
+  };
+
   return (
     <View style={MainStyle.container}>
       <View style={MainStyle.main}>
@@ -68,6 +79,9 @@ export default function MyRecipeView({navigation}) {
           </View>
         )}
         <FlatList
+          refreshControl={
+            <RefreshControl refreshing={refresh} onRefresh={refreshHandler} />
+          }
           keyExtractor={item => item.id}
           showsVerticalScrollIndicator={false}
           data={data.data}
@@ -90,7 +104,12 @@ export default function MyRecipeView({navigation}) {
                 <Text style={styles.title}>{item.category}</Text>
                 <View style={{flexDirection: 'row'}}>
                   <TouchableOpacity
-                    style={[styles.btn, {backgroundColor: '#30C0F3'}]}>
+                    style={[styles.btn, {backgroundColor: '#30C0F3'}]}
+                    onPress={() =>
+                      navigation.navigate('Edit', {
+                        itemId: item.id,
+                      })
+                    }>
                     <Text style={styles.btntext}>Edit</Text>
                   </TouchableOpacity>
                   <TouchableOpacity

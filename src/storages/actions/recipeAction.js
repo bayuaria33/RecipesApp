@@ -69,6 +69,26 @@ export const addRecipe = (token, data) => async dispatch => {
   }
 };
 
+export const editRecipe = (token, data, id) => async dispatch => {
+  try {
+    let config = {
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+    dispatch({type: 'EDIT_RECIPE_PENDING'});
+    const result = await axios.put(url + id, data, config);
+    const payload = result.data;
+    dispatch({type: 'EDIT_RECIPE_SUCCESS', payload});
+  } catch (err) {
+    dispatch({type: 'EDIT_RECIPE_FAILED', payload: err.response.data.message});
+    console.log('Edit Recipe error');
+    console.log('data = ', data);
+    console.log(err);
+  }
+};
+
 export const deleteRecipe = (token, id) => async dispatch => {
   let config = {
     headers: {
