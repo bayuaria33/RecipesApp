@@ -8,22 +8,55 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   FlatList,
+  Alert,
 } from 'react-native';
 import {MainStyle} from '../../AppStyles';
 import {useDispatch, useSelector} from 'react-redux';
-import {getMyRecipe} from '../../storages/actions/recipeAction';
+import {getMyRecipe, deleteRecipe} from '../../storages/actions/recipeAction';
 export default function MyRecipeView({navigation}) {
   const token = useSelector(state => state.auth.data.data.accessToken);
   const data = useSelector(state => state.my);
+  const deleteState = useSelector(state => state.del);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getMyRecipe(token));
   }, [dispatch, token]);
+
+  const delAlert = id =>
+    Alert.alert(
+      'Delete Alert',
+      'Are you sure you want to delete this recipe?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Delete canceled'),
+          style: 'cancel',
+        },
+        {
+          text: 'Confirm',
+          onPress: () =>
+            dispatch(deleteRecipe(token, id)).then(() => {
+              dispatch(getMyRecipe(token));
+            }),
+        },
+      ],
+    );
   return (
     <View style={MainStyle.container}>
       <View style={MainStyle.main}>
         <Text style={MainStyle.headerText}>My Recipes</Text>
         {data.isLoading && (
+          <View style={{marginVertical: 16}}>
+            <View>
+              <ActivityIndicator
+                size={'large'}
+                color={'#EFC81A'}
+                style={{alignSelf: 'center'}}
+              />
+            </View>
+          </View>
+        )}
+        {deleteState.isLoading && (
           <View style={{marginVertical: 16}}>
             <View>
               <ActivityIndicator
@@ -55,7 +88,17 @@ export default function MyRecipeView({navigation}) {
               <View>
                 <Text style={styles.title}>{item.title}</Text>
                 <Text style={styles.title}>{item.category}</Text>
-                <Text style={styles.title}>By {item.author}</Text>
+                <View style={{flexDirection: 'row'}}>
+                  <TouchableOpacity
+                    style={[styles.btn, {backgroundColor: '#30C0F3'}]}>
+                    <Text style={styles.btntext}>Edit</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.btn, {backgroundColor: '#F57E71'}]}
+                    onPress={() => delAlert(item.id)}>
+                    <Text style={styles.btntext}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </TouchableOpacity>
           )}
