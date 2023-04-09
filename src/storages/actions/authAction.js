@@ -1,10 +1,9 @@
 import axios from 'axios';
-
-const REACT_APP_API_URL = 'https://rich-colt-cuff.cyclic.app/';
+const url = `${process.env.REACT_APP_API_URL}/`;
 export const loginUser = data => async dispatch => {
   try {
     dispatch({type: 'USER_LOGIN_PENDING'});
-    const result = await axios.post(`${REACT_APP_API_URL}/auth/login`, data);
+    const result = await axios.post(url + '/auth/login', data);
     // const user = result.data.data;
     dispatch({type: 'USER_LOGIN_SUCCESS', payload: result.data});
 
@@ -19,10 +18,7 @@ export const loginUser = data => async dispatch => {
 export const registerUser = data => async dispatch => {
   try {
     dispatch({type: 'USER_REGISTER_PENDING'});
-    const result = await axios.post(
-      `${REACT_APP_API_URL}/auth/register/user`,
-      data,
-    );
+    const result = await axios.post(url + '/auth/register/user', data);
     // const user = result.data.data;
     dispatch({type: 'USER_REGISTER_SUCCESS', payload: result.data});
     console.log('User Register success');

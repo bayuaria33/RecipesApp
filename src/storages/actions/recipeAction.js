@@ -1,5 +1,5 @@
 import axios from 'axios';
-const url = 'https://rich-colt-cuff.cyclic.app/recipes/';
+const url = `${process.env.REACT_APP_API_URL}/recipes/`;
 export const getAllRecipe = (token, search) => async dispatch => {
   const config = {
     headers: {

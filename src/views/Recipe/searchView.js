@@ -22,19 +22,6 @@ export default function SearchView({navigation}) {
   useEffect(() => {
     dispatch(getAllRecipe(token, search));
   }, [dispatch, token, search]);
-  if (data.isLoading === true) {
-    return (
-      <View style={MainStyle.container}>
-        <View style={MainStyle.main}>
-          <ActivityIndicator
-            size={'large'}
-            color={'#EFC81A'}
-            style={{alignSelf: 'center'}}
-          />
-        </View>
-      </View>
-    );
-  }
   return (
     <View style={MainStyle.container}>
       <View style={MainStyle.main}>
@@ -47,6 +34,17 @@ export default function SearchView({navigation}) {
             setSearchText('');
           }}
         />
+        {data.isLoading && (
+          <View style={{marginVertical: 16}}>
+            <View>
+              <ActivityIndicator
+                size={'large'}
+                color={'#EFC81A'}
+                style={{alignSelf: 'center'}}
+              />
+            </View>
+          </View>
+        )}
         <FlatList
           keyExtractor={item => item.id}
           showsVerticalScrollIndicator={false}
@@ -131,5 +129,13 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     lineHeight: 24,
     color: 'white',
+  },
+  spinner: {
+    flex: 1,
+    height: 64,
+    marginVertical: 16,
+    marginHorizontal: 16,
+    alignContent: 'center',
+    backgroundColor: 'red',
   },
 });
