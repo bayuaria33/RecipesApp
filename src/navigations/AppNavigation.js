@@ -4,6 +4,9 @@ import {NavigationContainer} from '@react-navigation/native';
 import LoginView from '../views/Auth/LoginView';
 import RegisterView from '../views/Auth/RegisterView';
 import HomeView from '../views/Home/HomeView';
+import ForgetView from '../views/Auth/ForgetView';
+import RequestView from '../views/Auth/RequestView';
+import ResetView from '../views/Auth/ResetView';
 import AddView from '../views/Recipe/addView';
 import MyRecipeView from '../views/Recipe/myRecipeView';
 import ProfileView from '../views/Profile/ProfileView';
@@ -122,6 +125,27 @@ export default function MainNavigator() {
             <Stack.Screen
               name="Register"
               component={RegisterView}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="Forget"
+              component={ForgetView}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="Request"
+              component={RequestView}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="Reset"
+              component={ResetView}
               options={{
                 headerShown: false,
               }}

@@ -64,7 +64,11 @@ export default function LoginView({navigation}) {
         />
         {auth.isError && <Text>{auth.data.message}</Text>}
 
-        <Text style={AuthStyle.subHeaderText}>Forgot Password?</Text>
+        <Text
+          style={AuthStyle.subHeaderText}
+          onPress={() => navigation.navigate('Forget')}>
+          Forgot Password?
+        </Text>
         <TouchableOpacity style={AuthStyle.btn} onPress={loginSubmit}>
           <Text style={AuthStyle.btnlabel}>
             {auth.isLoading ? (
