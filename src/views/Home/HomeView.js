@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -7,42 +8,33 @@ import {
   useWindowDimensions,
   Image,
   TouchableOpacity,
+  ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import styles from './styles';
 import {MainStyle} from '../../AppStyles';
+import {useDispatch, useSelector} from 'react-redux';
+import {getAllRecipe} from '../../storages/actions/recipeAction';
 export default function HomeView({navigation}) {
   const {width} = useWindowDimensions();
+  const [search, setSearch] = useState('');
+  const [refresh, setRefresh] = useState(false);
+  const dispatch = useDispatch();
+  const data = useSelector(state => state.all);
+  const token = useSelector(state => state.auth.data.data.accessToken);
+  useEffect(() => {
+    dispatch(getAllRecipe(token, search));
+  }, [dispatch, token, search]);
+
+  const refreshHandler = () => {
+    setRefresh(true);
+    setTimeout(() => {
+      dispatch(getAllRecipe(token, search)).then(() => {
+        setRefresh(false);
+      });
+    }, 1000);
+  };
   const w = width * 0.8;
-  const data = [
-    {
-      id: 1,
-      title: 'Beef Steak',
-      category: 'Main Course',
-      photo:
-        'https://res.cloudinary.com/dedas1ohg/image/upload/v1680575811/recipes_images/c63e16377fa5e9ecd8dde47ecf7cd683_z6pykn.jpg',
-    },
-    {
-      id: 2,
-      title: 'Spaghetti',
-      category: 'Main Course',
-      photo:
-        'https://res.cloudinary.com/dedas1ohg/image/upload/v1680575810/recipes_images/40261c035eed315afdc149ee073393ea_ng6nb3.jpg',
-    },
-    {
-      id: 3,
-      title: 'Caesar Salad',
-      category: 'Vegetarian',
-      photo:
-        'https://res.cloudinary.com/dedas1ohg/image/upload/v1680575810/recipes_images/9d38bac836d2d3d98930f6fc722bfdec_fnb5vs.jpg',
-    },
-    {
-      id: 4,
-      title: 'Egg Sandwich',
-      category: 'Main Course',
-      photo:
-        'https://res.cloudinary.com/dedas1ohg/image/upload/v1680575811/recipes_images/96bbf7e44d119d80a61c4894c5c96c74_ibqm5a.jpg',
-    },
-  ];
   const dataMenu = [
     {
       id: 1,
@@ -92,20 +84,42 @@ export default function HomeView({navigation}) {
           onPress={() => navigation.navigate('Search')}>
           <Text style={styles.textSub}>Search Pasta, Bread, etc</Text>
         </TouchableOpacity>
-        <Text style={styles.textHeader}>Popular Recipes</Text>
+        {data.isLoading && (
+          <View style={{marginVertical: 16}}>
+            <View>
+              <ActivityIndicator
+                size={'large'}
+                color={'#EFC81A'}
+                style={{alignSelf: 'center'}}
+              />
+            </View>
+          </View>
+        )}
+        <Text
+          style={styles.textHeader}
+          onPress={() => navigation.navigate('Popular')}>
+          Popular Recipes
+        </Text>
         <Text style={styles.textSub}>Popular Check</Text>
         <View style={{height: 180, width: w}}>
           <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refresh} onRefresh={refreshHandler} />
+            }
             horizontal
             showsHorizontalScrollIndicator={false}
             bounces={false}>
             {/* Item 1 */}
-            {data.map((item, index) => {
+            {data.data?.slice(0, 4).map((item, index) => {
               return (
                 <TouchableOpacity
                   style={styles.item}
                   key={index}
-                  onPress={() => navigation.navigate('Popular')}>
+                  onPress={() =>
+                    navigation.navigate('Detail', {
+                      itemId: item.id,
+                    })
+                  }>
                   <Image style={styles.img4} source={{uri: item.photo}} />
                   <View style={styles.img5}>
                     <Text style={styles.textImg2}>{item.title}</Text>
@@ -141,9 +155,16 @@ export default function HomeView({navigation}) {
             showsHorizontalScrollIndicator={false}
             bounces={false}>
             {/* Item 1 */}
-            {data.map((item, index) => {
+            {data.data?.slice(0, 4).map((item, index) => {
               return (
-                <TouchableOpacity style={styles.item} key={index}>
+                <TouchableOpacity
+                  style={styles.item}
+                  key={index}
+                  onPress={() =>
+                    navigation.navigate('Detail', {
+                      itemId: item.id,
+                    })
+                  }>
                   <Image style={styles.img2} source={{uri: item.photo}} />
                   <View style={styles.img3}>
                     <Text style={styles.textImg}>{item.title}</Text>
