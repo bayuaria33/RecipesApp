@@ -10,9 +10,11 @@ import {
   Image,
   ScrollView,
   ActivityIndicator,
+  Alert,
+  PermissionsAndroid,
 } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
-import {launchImageLibrary} from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {MainStyle} from '../../AppStyles';
 import {useDispatch, useSelector} from 'react-redux';
 import {editRecipe, getDetailRecipe} from '../../storages/actions/recipeAction';
@@ -23,15 +25,44 @@ export default function EditView({route}) {
   const token = useSelector(state => state.auth.data.data.accessToken);
   const users_id = useSelector(state => state.auth.data.data.id);
   const data = useSelector(state => state.edit);
-  const detail = useSelector(state => state.detail.data[0]);
+  const detail = useSelector(state => state.detail?.data[0]);
+  const detaildata = useSelector(state => state.detail);
   const [filePath, setFilePath] = useState(detail.photo);
   const [fileName, setFileName] = useState(null);
   const [fileType, setFileType] = useState(null);
-
   const [title, setTitle] = useState(detail.title);
+  const [posted, setPosted] = useState(false);
   const [ingredients, setIngredients] = useState(detail.ingredients);
   const [categories_id, setCategories_id] = useState(detail.categories_id);
+  useEffect(() => {
+    dispatch(getDetailRecipe(token, id));
+    setPosted(false);
+  }, [dispatch, id, token]);
+
+  useEffect(() => {
+    if (detail) {
+      setTitle(detail.title);
+      setIngredients(detail.ingredients);
+      setFilePath(detail.photo);
+      setCategories_id(detail.categories_id);
+    }
+  }, [detail]);
   const postForm = e => {
+    if (title.trim() === '') {
+      Alert.alert('Error', 'Please enter Recipe title');
+      return;
+    }
+
+    if (ingredients.trim() === '') {
+      Alert.alert('Error', 'Please enter Recipe ingredients');
+      return;
+    }
+
+    if (!filePath) {
+      Alert.alert('Error', 'Please select a photo');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('title', title);
     formData.append('ingredients', ingredients);
@@ -48,21 +79,64 @@ export default function EditView({route}) {
         : detail.photo,
     );
     console.log(formData);
-    dispatch(editRecipe(token, formData, id));
+    dispatch(editRecipe(token, formData, id)).then(() => {
+      setPosted(true);
+    });
   };
+  const cameraLaunch = () => {
+    let options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'images',
+      },
+    };
+    launchCamera(options, response => {
+      if (response.didCancel) {
+        alert('Upload photo canceled');
+        return;
+      } else if (response.errorCode === 'camera_unavailable') {
+        alert('Camera not available on device');
+        return;
+      } else if (response.errorCode === 'permission') {
+        alert('Permission not granted');
+        return;
+      } else if (response.errorCode === 'others') {
+        alert(response.errorMessage);
+        return;
+      }
+      let assets = response.assets[0];
 
-  useEffect(() => {
-    dispatch(getDetailRecipe(token, id));
-  }, [dispatch, id, token]);
-
-  useEffect(() => {
-    if (detail) {
-      setTitle(detail.title);
-      setIngredients(detail.ingredients);
-      setFilePath(detail.photo);
-      setCategories_id(detail.categories_id);
+      console.log('fileName = ', assets.fileName);
+      console.log('type = ', assets.type);
+      console.log('uri = ', assets.uri);
+      setFilePath(assets.uri);
+      setFileName(assets.fileName);
+      setFileType(assets.type);
+    });
+  };
+  const requestCameraPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'App Camera Permission',
+          message: 'App needs access to your camera ',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Camera permission given');
+        cameraLaunch();
+      } else {
+        alert('Camera Permission not granted');
+        console.log('Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
     }
-  }, [detail]);
+  };
   const chooseFile = type => {
     let options = {
       mediaType: type,
@@ -98,7 +172,7 @@ export default function EditView({route}) {
       <View style={MainStyle.main}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <Text style={MainStyle.headerText}>Edit Recipe</Text>
-          {detail.isLoading && (
+          {detaildata.isLoading && (
             <View style={{marginVertical: 16}}>
               <View>
                 <ActivityIndicator
@@ -127,7 +201,7 @@ export default function EditView({route}) {
             value={ingredients}
             onChangeText={value => setIngredients(value)}
           />
-          <Text style={styles.label}>Photo</Text>
+          <Text style={styles.label}>Photo Preview</Text>
           {filePath === null ? (
             <Image
               source={{
@@ -154,12 +228,27 @@ export default function EditView({route}) {
               }}
             />
           )}
-          <TouchableOpacity
-            activeOpacity={0.5}
-            style={styles.btn}
-            onPress={() => chooseFile('photo')}>
-            <Text style={styles.btnlabel}>Choose Photo</Text>
-          </TouchableOpacity>
+          <Text style={styles.label}>Upload Photo</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: 319,
+            }}>
+            <TouchableOpacity
+              activeOpacity={0.5}
+              style={styles.btn2}
+              onPress={() => requestCameraPermission()}>
+              <Text style={styles.btnlabel}>Camera</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.5}
+              style={styles.btn2}
+              onPress={() => chooseFile('photo')}>
+              <Text style={styles.btnlabel}>Gallery</Text>
+            </TouchableOpacity>
+          </View>
 
           <Text style={styles.label}>Category</Text>
           <Picker
@@ -172,9 +261,7 @@ export default function EditView({route}) {
             <Picker.Item label="Dessert" value={7} />
             <Picker.Item label="Breakfast" value={2} />
           </Picker>
-          {data.isSuccess && (
-            <Text style={styles.label}>Edit Recipe Successful!</Text>
-          )}
+          {posted && <Text style={styles.label}>Edit Recipe Successful!</Text>}
           {data.isError && (
             <Text style={styles.label}>Edit Recipe Failed.</Text>
           )}
@@ -231,6 +318,18 @@ const styles = StyleSheet.create({
     width: 183,
     height: 50,
     marginBottom: 16,
+  },
+  btn2: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#EFC81A',
+    padding: 10,
+    borderRadius: 15,
+    width: 100,
+    height: 50,
+    marginTop: 16,
+    marginBottom: 16,
+    marginHorizontal: 16,
   },
   btnlabel: {
     fontSize: 16,

@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import {MainStyle} from '../../AppStyles';
 import {AuthStyle} from './authStyles';
@@ -17,13 +18,28 @@ export default function RegisterView({navigation}) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [posted, setPosted] = useState(false);
   const formData = {
     name: name,
     email: email,
     password: password,
   };
   const registerSubmit = () => {
-    dispatch(registerUser(formData));
+    if (name.trim() === '') {
+      Alert.alert('Error', 'Please enter your name');
+      return;
+    }
+    if (email.trim() === '') {
+      Alert.alert('Error', 'Please enter your email');
+      return;
+    }
+    if (password.trim() === '') {
+      Alert.alert('Error', 'Please enter your password');
+      return;
+    }
+    dispatch(registerUser(formData)).then(() => {
+      setPosted(true);
+    });
   };
   const regis = useSelector(state => state.regis);
   return (
@@ -61,7 +77,7 @@ export default function RegisterView({navigation}) {
           onChangeText={value => setPassword(value)}
         />
         {regis.isError && <Text>Register Failed</Text>}
-        {regis.isSuccess && <Text>Registration Successful</Text>}
+        {posted && <Text>Register Successful</Text>}
         <TouchableOpacity style={AuthStyle.btn} onPress={registerSubmit}>
           <Text style={AuthStyle.btnlabel}>
             {regis.isLoading ? (

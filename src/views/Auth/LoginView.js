@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import {AuthStyle} from './authStyles';
 import {MainStyle} from '../../AppStyles';
@@ -21,6 +22,14 @@ export default function LoginView({navigation}) {
   };
 
   const loginSubmit = () => {
+    if (email.trim() === '') {
+      Alert.alert('Error', 'Please enter your email');
+      return;
+    }
+    if (password.trim() === '') {
+      Alert.alert('Error', 'Please enter your Password');
+      return;
+    }
     dispatch(loginUser(formData));
   };
   const dispatch = useDispatch();
@@ -53,7 +62,7 @@ export default function LoginView({navigation}) {
           value={password}
           onChangeText={value => setPassword(value)}
         />
-        {auth.isError && <Text>Wrong Email / Password</Text>}
+        {auth.isError && <Text>{auth.data.message}</Text>}
 
         <Text style={AuthStyle.subHeaderText}>Forgot Password?</Text>
         <TouchableOpacity style={AuthStyle.btn} onPress={loginSubmit}>

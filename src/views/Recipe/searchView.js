@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   FlatList,
+  RefreshControl,
 } from 'react-native';
 import {MainStyle} from '../../AppStyles';
 import {useSelector, useDispatch} from 'react-redux';
@@ -18,6 +19,15 @@ export default function SearchView({navigation}) {
   const data = useSelector(state => state.all);
   const [search, setSearch] = useState('');
   const [searchText, setSearchText] = useState('');
+  const [refresh, setRefresh] = useState(false);
+  const refreshHandler = () => {
+    setRefresh(true);
+    setTimeout(() => {
+      dispatch(getAllRecipe(token, search)).then(() => {
+        setRefresh(false);
+      });
+    }, 1000);
+  };
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getAllRecipe(token, search));
@@ -46,6 +56,9 @@ export default function SearchView({navigation}) {
           </View>
         )}
         <FlatList
+          refreshControl={
+            <RefreshControl refreshing={refresh} onRefresh={refreshHandler} />
+          }
           keyExtractor={item => item.id}
           showsVerticalScrollIndicator={false}
           data={data.data}
