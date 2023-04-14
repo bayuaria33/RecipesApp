@@ -62,7 +62,7 @@ export default function LoginView({navigation}) {
           value={password}
           onChangeText={value => setPassword(value)}
         />
-        {auth.isError && <Text>{auth.data.message}</Text>}
+        {auth.isError && <Text>Wrong email / password</Text>}
 
         <Text
           style={AuthStyle.subHeaderText}

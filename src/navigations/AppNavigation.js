@@ -1,6 +1,7 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
+import SplashView from '../views/Home/SplashView';
 import LoginView from '../views/Auth/LoginView';
 import RegisterView from '../views/Auth/RegisterView';
 import HomeView from '../views/Home/HomeView';
@@ -111,7 +112,7 @@ export default function MainNavigator() {
   const auth = useSelector(state => state.auth);
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator initialRouteName="Splash">
         {/* Auth Group */}
         {auth.data == null ? (
           <>
@@ -125,6 +126,13 @@ export default function MainNavigator() {
             <Stack.Screen
               name="Register"
               component={RegisterView}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="Splash"
+              component={SplashView}
               options={{
                 headerShown: false,
               }}
