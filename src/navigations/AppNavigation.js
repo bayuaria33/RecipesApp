@@ -15,6 +15,7 @@ import SearchView from '../views/Recipe/searchView';
 import PopularView from '../views/Recipe/popularView';
 import DetailView from '../views/Recipe/detailView';
 import EditView from '../views/Recipe/editView';
+import EditProfileView from '../views/Profile/editProfileView';
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -88,6 +89,15 @@ function TabNavigator() {
       <Tab.Screen
         name="Detail"
         component={DetailView}
+        options={{
+          headerShown: false,
+          tabBarButton: () => null,
+          tabBarVisible: true,
+        }}
+      />
+      <Tab.Screen
+        name="EditProfile"
+        component={EditProfileView}
         options={{
           headerShown: false,
           tabBarButton: () => null,

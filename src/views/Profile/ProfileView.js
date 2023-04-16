@@ -37,7 +37,9 @@ export default function ProfileView({navigation}) {
         </Text>
       </View>
       <View style={styles.card}>
-        <TouchableOpacity style={styles.tabTop}>
+        <TouchableOpacity
+          style={styles.tabTop}
+          onPress={() => navigation.navigate('EditProfile')}>
           <Icon name="person-outline" color={'#EFC81A'} size={25} />
           <Text style={styles.label}>Edit Profile</Text>
         </TouchableOpacity>
