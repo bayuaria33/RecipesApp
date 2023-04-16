@@ -5,6 +5,7 @@ export const MainStyle = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F5F5',
     alignItems: 'center',
+    fontFamily: 'Poppins-Regular',
   },
   main: {
     flex: 1,
