@@ -35,7 +35,8 @@ export default function LoginView({navigation}) {
   const dispatch = useDispatch();
   const auth = useSelector(state => state.auth);
   return (
-    <View style={MainStyle.container}>
+    <View
+      style={[MainStyle.container, {justifyContent: 'center', marginTop: 230}]}>
       <ImageBackground
         style={AuthStyle.header}
         source={{

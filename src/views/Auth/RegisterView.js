@@ -37,13 +37,22 @@ export default function RegisterView({navigation}) {
       Alert.alert('Error', 'Please enter your password');
       return;
     }
+    // setPosted(true).then(() => {
+    //   setTimeout(() => {
+    //     navigation.navigate('RequestOTP');
+    //   }, 1000);
+    // });
     dispatch(registerUser(formData)).then(() => {
       setPosted(true);
+      setTimeout(() => {
+        navigation.navigate('RequestOTP');
+      }, 1000);
     });
   };
   const regis = useSelector(state => state.regis);
   return (
-    <View style={MainStyle.container}>
+    <View
+      style={[MainStyle.container, {justifyContent: 'center', marginTop: 230}]}>
       <ImageBackground
         style={AuthStyle.header}
         source={{
@@ -78,6 +87,11 @@ export default function RegisterView({navigation}) {
         />
         {regis.isError && <Text>Register Failed</Text>}
         {posted && <Text>Register Successful</Text>}
+        <Text
+          style={AuthStyle.subHeaderText}
+          onPress={() => navigation.navigate('RequestOTP')}>
+          Request OTP
+        </Text>
         <TouchableOpacity style={AuthStyle.btn} onPress={registerSubmit}>
           <Text style={AuthStyle.btnlabel}>
             {regis.isLoading ? (

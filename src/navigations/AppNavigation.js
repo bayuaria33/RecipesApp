@@ -16,6 +16,8 @@ import PopularView from '../views/Recipe/popularView';
 import DetailView from '../views/Recipe/detailView';
 import EditView from '../views/Recipe/editView';
 import EditProfileView from '../views/Profile/editProfileView';
+import RequestOTPView from '../views/Auth/RequestOTP';
+import ConfirmOTPView from '../views/Auth/ConfirmOTP';
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -164,6 +166,20 @@ export default function MainNavigator() {
             <Stack.Screen
               name="Reset"
               component={ResetView}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="RequestOTP"
+              component={RequestOTPView}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="ConfirmOTP"
+              component={ConfirmOTPView}
               options={{
                 headerShown: false,
               }}

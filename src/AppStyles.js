@@ -18,7 +18,7 @@ export const MainStyle = StyleSheet.create({
     fontSize: 24,
     color: '#EFC81A',
     alignSelf: 'center',
-    fontWeight: '600',
+    fontFamily: 'Poppins-Bold',
   },
   subHeaderText: {
     fontSize: 14,

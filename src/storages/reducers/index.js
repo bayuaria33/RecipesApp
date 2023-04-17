@@ -8,6 +8,8 @@ import addReducer from './addRecipeReducer';
 import deleteReducer from './deleteRecipeReducer';
 import editReducer from './editRecipeReducer';
 import editProfile from './editProfileReducer';
+import verifyReducer from './verifyUserReducer';
+import requestOTPReducer from './requestOTPReducer';
 const appReducers = combineReducers({
   auth: authReducer,
   regis: regisReducer,
@@ -18,6 +20,8 @@ const appReducers = combineReducers({
   del: deleteReducer,
   edit: editReducer,
   editprofile: editProfile,
+  reqotp: requestOTPReducer,
+  verify: verifyReducer,
 });
 
 export default appReducers;
