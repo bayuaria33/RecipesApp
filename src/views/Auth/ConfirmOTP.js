@@ -85,7 +85,9 @@ export default function ConfirmOTPView({navigation}) {
           />
         </View>
       </View>
-      {dataotp.isError && <Text>Wrong email / password</Text>}
+      {dataotp.isError && (
+        <Text>OTP Verification failed, please try again</Text>
+      )}
       <TouchableOpacity
         style={[AuthStyle.btn, {marginBottom: 32}]}
         onPress={formSubmit}>
