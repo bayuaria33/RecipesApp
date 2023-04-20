@@ -17,7 +17,11 @@ import {Picker} from '@react-native-picker/picker';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {MainStyle} from '../../AppStyles';
 import {useDispatch, useSelector} from 'react-redux';
-import {editRecipe, getDetailRecipe} from '../../storages/actions/recipeAction';
+import {
+  editRecipe,
+  getDetailRecipe,
+  getCategories,
+} from '../../storages/actions/recipeAction';
 export default function EditView({route}) {
   const dispatch = useDispatch();
   const {itemId} = route.params;
@@ -25,6 +29,8 @@ export default function EditView({route}) {
   const token = useSelector(state => state.auth.data.data.accessToken);
   const users_id = useSelector(state => state.auth.data.data.id);
   const data = useSelector(state => state.edit);
+  const categories = useSelector(state => state.categories);
+
   const detail = useSelector(state => state.detail?.data[0]);
   const detaildata = useSelector(state => state.detail);
   const [filePath, setFilePath] = useState(detail.photo);
@@ -36,6 +42,7 @@ export default function EditView({route}) {
   const [categories_id, setCategories_id] = useState(detail.categories_id);
   useEffect(() => {
     dispatch(getDetailRecipe(token, id));
+    dispatch(getCategories());
     setPosted(false);
   }, [dispatch, id, token]);
 
@@ -172,6 +179,17 @@ export default function EditView({route}) {
       <View style={MainStyle.main}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <Text style={MainStyle.headerText}>Edit Recipe</Text>
+          {categories.isLoading && (
+            <View style={{marginVertical: 16}}>
+              <View>
+                <ActivityIndicator
+                  size={'large'}
+                  color={'#EFC81A'}
+                  style={{alignSelf: 'center'}}
+                />
+              </View>
+            </View>
+          )}
           {detaildata.isLoading && (
             <View style={{marginVertical: 16}}>
               <View>
@@ -255,11 +273,13 @@ export default function EditView({route}) {
             style={styles.input}
             selectedValue={categories_id}
             onValueChange={item => setCategories_id(item)}>
-            <Picker.Item label="Nasi" value={6} />
-            <Picker.Item label="Soup" value={4} />
-            <Picker.Item label="Vegetarian" value={3} />
-            <Picker.Item label="Dessert" value={7} />
-            <Picker.Item label="Breakfast" value={2} />
+            {categories.data?.map((item, index) => (
+              <Picker.Item
+                key={index}
+                label={item.category_name}
+                value={item.id}
+              />
+            ))}
           </Picker>
           {posted && <Text style={styles.label}>Edit Recipe Successful!</Text>}
           {data.isError && (

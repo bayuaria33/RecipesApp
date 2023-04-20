@@ -134,3 +134,20 @@ export const sendNotifs = () => async dispatch => {
     console.log(err);
   }
 };
+
+const url_cat = `${process.env.REACT_APP_API_URL}/categories/`;
+export const getCategories = (token, search) => async dispatch => {
+  const config = {
+    headers: {
+      Authorization: 'Bearer ' + token,
+    },
+  };
+  try {
+    dispatch({type: 'GET_CATEGORIES_PENDING'});
+    const result = await axios.get(url_cat, config);
+    let res = result.data.data;
+    dispatch({type: 'GET_CATEGORIES_SUCCESS', payload: res});
+  } catch (error) {
+    dispatch({type: 'GET_CATEGORIES_ERROR'});
+  }
+};

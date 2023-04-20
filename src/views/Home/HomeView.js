@@ -11,19 +11,23 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './styles';
 import {MainStyle} from '../../AppStyles';
 import {useDispatch, useSelector} from 'react-redux';
-import {getAllRecipe} from '../../storages/actions/recipeAction';
+import {getAllRecipe, getCategories} from '../../storages/actions/recipeAction';
 export default function HomeView({navigation}) {
   const {width} = useWindowDimensions();
   const [search, setSearch] = useState('');
   const [refresh, setRefresh] = useState(false);
   const dispatch = useDispatch();
   const data = useSelector(state => state.all);
+  const categories = useSelector(state => state.categories);
+
   const token = useSelector(state => state.auth.data.data.accessToken);
   useEffect(() => {
     dispatch(getAllRecipe(token, search));
+    dispatch(getCategories());
   }, [dispatch, token, search]);
 
   const refreshHandler = () => {
@@ -72,7 +76,7 @@ export default function HomeView({navigation}) {
     <TouchableOpacity
       style={[styles.thumb, {backgroundColor}]}
       onPress={() => console.log('Button pressed!')}>
-      <Image source={icon} />
+      <Icon name={icon} color={'white'} size={48} />
     </TouchableOpacity>
   );
 
@@ -133,15 +137,12 @@ export default function HomeView({navigation}) {
         <Text style={styles.textHeader}>New Recipes</Text>
         <View style={{height: 95, width: w}}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {dataMenu.map((item, index) => {
+            {categories.data?.map((item, index) => {
               return (
                 <View key={index}>
-                  <MenuCategory
-                    icon={item.photo}
-                    backgroundColor={item.color}
-                  />
-                  <Text style={[styles.textHeader, {alignSelf: 'center'}]}>
-                    {item.title}
+                  <MenuCategory icon={item.icon} backgroundColor={item.color} />
+                  <Text style={[styles.textSub, {alignSelf: 'center'}]}>
+                    {item.category_name}
                   </Text>
                 </View>
               );
