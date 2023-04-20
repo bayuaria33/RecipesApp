@@ -18,6 +18,7 @@ import EditView from '../views/Recipe/editView';
 import EditProfileView from '../views/Profile/editProfileView';
 import RequestOTPView from '../views/Auth/RequestOTP';
 import ConfirmOTPView from '../views/Auth/ConfirmOTP';
+import CategoryView from '../views/Recipe/categoryView';
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -95,6 +96,16 @@ function TabNavigator() {
           headerShown: false,
           tabBarButton: () => null,
           tabBarVisible: true,
+        }}
+      />
+      <Tab.Screen
+        name="Category"
+        component={CategoryView}
+        options={{
+          headerShown: false,
+          tabBarButton: () => null,
+          tabBarVisible: false,
+          tabBarStyle: {display: 'none'},
         }}
       />
       <Tab.Screen

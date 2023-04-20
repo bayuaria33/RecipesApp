@@ -16,6 +16,25 @@ export const getAllRecipe = (token, search) => async dispatch => {
   }
 };
 
+export const getRecipeByCategory = (token, search) => async dispatch => {
+  const config = {
+    headers: {
+      Authorization: 'Bearer ' + token,
+    },
+  };
+  try {
+    dispatch({type: 'GET_RECIPE_CAT_PENDING'});
+    const result = await axios.get(
+      url + '?searchBy=categories_id::text' + '&search=' + search,
+      config,
+    );
+    let res = result.data.data;
+    dispatch({type: 'GET_RECIPE_CAT_SUCCESS', payload: res});
+  } catch (error) {
+    dispatch({type: 'GET_RECIPE_CAT_ERROR'});
+  }
+};
+
 export const getMyRecipe = token => async dispatch => {
   const config = {
     headers: {

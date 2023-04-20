@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './styles';
+import {useIsFocused} from '@react-navigation/native';
 import {MainStyle} from '../../AppStyles';
 import {useDispatch, useSelector} from 'react-redux';
 import {getAllRecipe, getCategories} from '../../storages/actions/recipeAction';
@@ -29,7 +30,6 @@ export default function HomeView({navigation}) {
     dispatch(getAllRecipe(token, search));
     dispatch(getCategories());
   }, [dispatch, token, search]);
-
   const refreshHandler = () => {
     setRefresh(true);
     setTimeout(() => {
@@ -39,43 +39,15 @@ export default function HomeView({navigation}) {
     }, 1000);
   };
   const w = width * 0.8;
-  const dataMenu = [
-    {
-      id: 1,
-      title: 'Soup',
-      photo: require('../../assets/images/thumb_1.png'),
-      color: '#57CE96',
-    },
-    {
-      id: 2,
-      title: 'Chicken',
-      photo: require('../../assets/images/thumb_2.png'),
-      color: '#FDE901',
-    },
-    {
-      id: 3,
-      title: 'Seafood',
-      photo: require('../../assets/images/thumb_3.png'),
-      color: '#000001',
-    },
-    {
-      id: 4,
-      title: 'Dessert',
-      photo: require('../../assets/images/thumb_2.png'),
-      color: '#01246B',
-    },
-    {
-      id: 5,
-      title: 'Vegetarian',
-      photo: require('../../assets/images/thumb_1.png'),
-      color: '#FDE901',
-    },
-  ];
-
-  const MenuCategory = ({icon, backgroundColor}) => (
+  const MenuCategory = ({icon, backgroundColor, category, categories_id}) => (
     <TouchableOpacity
       style={[styles.thumb, {backgroundColor}]}
-      onPress={() => console.log('Button pressed!')}>
+      onPress={() =>
+        navigation.navigate('Category', {
+          category: category,
+          categories_id: categories_id,
+        })
+      }>
       <Icon name={icon} color={'white'} size={48} />
     </TouchableOpacity>
   );
@@ -134,13 +106,18 @@ export default function HomeView({navigation}) {
             })}
           </ScrollView>
         </View>
-        <Text style={styles.textHeader}>New Recipes</Text>
+        <Text style={styles.textHeader}>Browse by Categories</Text>
         <View style={{height: 95, width: w}}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {categories.data?.map((item, index) => {
+            {categories.data?.reverse().map((item, index) => {
               return (
                 <View key={index}>
-                  <MenuCategory icon={item.icon} backgroundColor={item.color} />
+                  <MenuCategory
+                    icon={item.icon}
+                    backgroundColor={item.color}
+                    categories_id={item.id}
+                    category={item.category_name}
+                  />
                   <Text style={[styles.textSub, {alignSelf: 'center'}]}>
                     {item.category_name}
                   </Text>
