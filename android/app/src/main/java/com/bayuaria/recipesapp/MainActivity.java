@@ -1,4 +1,4 @@
-package com.recipesapp;
+package com.bayuaria.recipesapp;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

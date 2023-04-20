@@ -1,4 +1,4 @@
-package com.recipesapp.newarchitecture.components;
+package com.bayuaria.recipesapp.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

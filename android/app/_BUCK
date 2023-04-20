@@ -35,12 +35,12 @@ android_library(
 
 android_build_config(
     name = "build_config",
-    package = "com.recipesapp",
+    package = "com.bayuaria.recipesapp",
 )
 
 android_resource(
     name = "res",
-    package = "com.recipesapp",
+    package = "com.bayuaria.recipesapp",
     res = "src/main/res",
 )
 

@@ -1,4 +1,4 @@
-package com.recipesapp.newarchitecture.modules;
+package com.bayuaria.recipesapp.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;
