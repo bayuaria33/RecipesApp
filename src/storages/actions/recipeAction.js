@@ -109,3 +109,28 @@ export const deleteRecipe = (token, id) => async dispatch => {
     console.log(err);
   }
 };
+
+export const sendNotifs = () => async dispatch => {
+  const url_onesignal = 'https://onesignal.com/api/v1/notifications';
+  let data = {
+    included_segments: 'Subscribed Users',
+    app_id: `${process.env.ONESIGNAL_APP_ID}`,
+    headings: {en: 'New Recipe has been added'},
+    contents: {en: 'Check it out now!'},
+    name: 'RECIPES_ADDED_NOTIFS',
+  };
+  let config = {
+    headers: {
+      accept: 'application/json',
+      Authorization: `Basic ${process.env.ONESIGNAL_REST_API_KEY}`,
+      'content-type': 'application/json',
+    },
+  };
+  try {
+    const result = await axios.post(url_onesignal, data, config);
+    console.log(result.data);
+  } catch (err) {
+    console.log('Send notifs error');
+    console.log(err);
+  }
+};

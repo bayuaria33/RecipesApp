@@ -18,7 +18,7 @@ import {Picker} from '@react-native-picker/picker';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {MainStyle} from '../../AppStyles';
 import {useDispatch, useSelector} from 'react-redux';
-import {addRecipe} from '../../storages/actions/recipeAction';
+import {addRecipe, sendNotifs} from '../../storages/actions/recipeAction';
 export default function AddView() {
   const dispatch = useDispatch();
   const [filePath, setFilePath] = useState(null);
@@ -71,6 +71,7 @@ export default function AddView() {
     console.log(formData);
     dispatch(addRecipe(token, formData)).then(() => {
       setPosted(true);
+      dispatch(sendNotifs());
     });
   };
   const cameraLaunch = () => {
