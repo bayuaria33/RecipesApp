@@ -55,9 +55,9 @@ Start the server
 
 | Login Screen                        | Register Screen                     | Change Password                 | User Profile Screen |
 | ----------------------------------- | ----------------------------------- |----------------------------------- | ----------------------------------- |
-| ![Login](/screenshots/ss_login.PNG) | ![Register](/screenshots/ss_register.PNG) | ![Change Password](/screenshots/ss_resetpw.PNG) | ![User Profile](/screenshots/ss_profile.PNG) |
+| ![Login](/screenshots/ss_login.png) | ![Register](/screenshots/ss_register.png) | ![Change Password](/screenshots/ss_resetpw.png) | ![User Profile](/screenshots/ss_profile.png) |
 
 | Home Screen                       | Search Screen                         | Detail Screen                                 | User Recipes Screen                            |
 | --------------------------------- | ------------------------------------- | --------------------------------------------- | ---------------------------------------------- |
-| ![Home](/screenshots/ss_home.PNG) | ![Search](/screenshots/ss_search.PNG) | ![Detail Recipes](/screenshots/ss_detail.PNG) | ![User Recipes](/screenshots/ss_myrecipes.PNG) |
+| ![Home](/screenshots/ss_home.png) | ![Search](/screenshots/ss_search.png) | ![Detail Recipes](/screenshots/ss_detail.png) | ![User Recipes](/screenshots/ss_myrecipes.png) |
 
