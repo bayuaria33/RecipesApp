@@ -1,32 +1,29 @@
-
 # RecipeApp
 
 RecipeApp is an Android app designed to exchange and discover recipes for cooking various dishes. It enables users to share recipes, along with detailed ingredient and cooking instructions.
 
 #
+
 ## Authors
 
 - [@bayuaria33](https://github.com/bayuaria33)
 
-
 ## Features
 
-- Authentication 
-    * (Login, Register)
+- Authentication
+  - (Login, Register)
 - B.R.E.A.D
-    - Browse recipes
-    - Read details
-    - Edit recipes
-    - Add recipes
-    - Delete recipes
-
+  - Browse recipes
+  - Read details
+  - Edit recipes
+  - Add recipes
+  - Delete recipes
 
 ## Tech Stack
 
 **Client:** React Native, React Redux, React Navigations
 
 **Server:** NodeJS, Express
-
 
 ## Run Locally
 
@@ -53,4 +50,14 @@ Start the server
 ```bash
   npm run android
 ```
+
+## Screenshots
+
+| Login Screen                        | Register Screen                     | Change Password                 | User Profile Screen |
+| ----------------------------------- | ----------------------------------- |----------------------------------- | ----------------------------------- |
+| ![Login](/screenshots/ss_login.PNG) | ![Register](/screenshots/ss_register.PNG) | ![Change Password](/screenshots/ss_resetpw.PNG) | ![User Profile](/screenshots/ss_profile.PNG) |
+
+| Home Screen                       | Search Screen                         | Detail Screen                                 | User Recipes Screen                            |
+| --------------------------------- | ------------------------------------- | --------------------------------------------- | ---------------------------------------------- |
+| ![Home](/screenshots/ss_home.PNG) | ![Search](/screenshots/ss_search.PNG) | ![Detail Recipes](/screenshots/ss_detail.PNG) | ![User Recipes](/screenshots/ss_myrecipes.PNG) |
 

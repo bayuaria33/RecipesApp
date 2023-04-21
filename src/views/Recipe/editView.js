@@ -30,16 +30,16 @@ export default function EditView({route}) {
   const users_id = useSelector(state => state.auth.data.data.id);
   const data = useSelector(state => state.edit);
   const categories = useSelector(state => state.categories);
-
-  const detail = useSelector(state => state.detail?.data[0]);
+  const detail = useSelector(state => state.detail);
   const detaildata = useSelector(state => state.detail);
-  const [filePath, setFilePath] = useState(detail.photo);
+  const [filePath, setFilePath] = useState(null);
   const [fileName, setFileName] = useState(null);
   const [fileType, setFileType] = useState(null);
-  const [title, setTitle] = useState(detail.title);
+  const [title, setTitle] = useState('');
   const [posted, setPosted] = useState(false);
-  const [ingredients, setIngredients] = useState(detail.ingredients);
-  const [categories_id, setCategories_id] = useState(detail.categories_id);
+  const [ingredients, setIngredients] = useState('');
+  const [categories_id, setCategories_id] = useState('');
+
   useEffect(() => {
     dispatch(getDetailRecipe(token, id));
     dispatch(getCategories());
@@ -47,11 +47,11 @@ export default function EditView({route}) {
   }, [dispatch, id, token]);
 
   useEffect(() => {
-    if (detail) {
-      setTitle(detail.title);
-      setIngredients(detail.ingredients);
-      setFilePath(detail.photo);
-      setCategories_id(detail.categories_id);
+    if (detail.data) {
+      setTitle(detail.data[0].title);
+      setIngredients(detail.data[0].ingredients);
+      setFilePath(detail.data[0].photo);
+      setCategories_id(detail.data[0].categories_id);
     }
   }, [detail]);
   const postForm = e => {
@@ -173,7 +173,19 @@ export default function EditView({route}) {
       setFileType(assets.type);
     });
   };
-
+  if (detail == null) {
+    return (
+      <View style={MainStyle.container}>
+        <View style={MainStyle.main}>
+          <ActivityIndicator
+            size={'large'}
+            color={'#EFC81A'}
+            style={{alignSelf: 'center'}}
+          />
+        </View>
+      </View>
+    );
+  }
   return (
     <View style={MainStyle.container}>
       <View style={MainStyle.main}>

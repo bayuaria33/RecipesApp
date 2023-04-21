@@ -1,6 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
+  ActivityIndicator,
+  Alert,
   Image,
   StyleSheet,
   Text,
@@ -11,8 +13,29 @@ import {
 import {MainStyle} from '../../AppStyles';
 import {AuthStyle} from './authStyles';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {useDispatch, useSelector} from 'react-redux';
+import {useState} from 'react';
+import {requestOTP} from '../../storages/actions/authAction';
 
 export default function ForgetView({navigation}) {
+  const dispatch = useDispatch();
+  const data = useSelector(state => state.reqotp);
+  const [email, setEmail] = useState('');
+  const formData = {
+    email: email,
+  };
+  const formSubmit = () => {
+    if (email.trim() === '') {
+      Alert.alert('Error', 'Please enter your email');
+      return;
+    }
+    dispatch(requestOTP(formData)).then(() => {
+      setTimeout(() => {
+        navigation.navigate('Request');
+      }, 1000);
+    });
+  };
+
   return (
     <View style={{flex: 1}}>
       <View style={styles.container}>
@@ -33,13 +56,21 @@ export default function ForgetView({navigation}) {
             style={styles.input}
             placeholder="youremailhere@email.com"
             underlineColorAndroid="transparent"
+            value={email}
+            onChangeText={value => setEmail(value)}
           />
         </View>
       </View>
       <TouchableOpacity
         style={[AuthStyle.btn, {marginBottom: 32}]}
-        onPress={() => navigation.navigate('Request')}>
-        <Text style={AuthStyle.btnlabel}> Reset Password</Text>
+        onPress={formSubmit}>
+        <Text style={AuthStyle.btnlabel}>
+          {data.isLoading ? (
+            <ActivityIndicator size="large" color="white" />
+          ) : (
+            'Request OTP'
+          )}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -82,7 +113,6 @@ const styles = StyleSheet.create({
     minWidth: '70%',
     height: 40,
     borderColor: '#EFC81A',
-    color: '#EFC81A',
   },
   imageStyle: {
     padding: 10,

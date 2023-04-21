@@ -12,6 +12,9 @@ import verifyReducer from './verifyUserReducer';
 import requestOTPReducer from './requestOTPReducer';
 import getCategoriesReducer from './getCategoriesReducer';
 import getRecipeByCat from './getRecipeByCategoryReducer';
+import confirmOTPReducer from './confirmOTPReducer';
+import changePWReducer from './changePWReducer';
+
 const appReducers = combineReducers({
   auth: authReducer,
   regis: regisReducer,
@@ -26,6 +29,8 @@ const appReducers = combineReducers({
   verify: verifyReducer,
   categories: getCategoriesReducer,
   getbycat: getRecipeByCat,
+  confirmotp: confirmOTPReducer,
+  changepw: changePWReducer,
 });
 
 export default appReducers;

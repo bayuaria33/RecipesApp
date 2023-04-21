@@ -1,6 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
+  ActivityIndicator,
+  Alert,
   Image,
   StyleSheet,
   Text,
@@ -11,8 +13,49 @@ import {
 import {MainStyle} from '../../AppStyles';
 import {AuthStyle} from './authStyles';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import {useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {changePass} from '../../storages/actions/authAction';
+import {useEffect} from 'react';
 export default function ResetView({navigation}) {
+  const dispatch = useDispatch();
+  const auth = useSelector(state => state.auth);
+  const dataPass = useSelector(state => state.changepw);
+  const confirmotp = useSelector(state => state.confirmotp);
+
+  useEffect(() => {
+    if (auth.data == null) {
+      setEmail(confirmotp.data?.data[0].email);
+    }
+    setEmail(auth.data.data.email);
+  }, [auth.data, confirmotp.data?.data]);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const formData = {
+    email: email,
+    password: password,
+    confirm: confirm,
+  };
+  const formSubmit = () => {
+    if (password.trim() === '') {
+      Alert.alert('Error', 'Please enter your password');
+      return;
+    }
+    if (confirm.trim() === '') {
+      Alert.alert('Error', 'Confirmed password didnt match');
+      return;
+    }
+    dispatch(changePass(formData)).then(() => {
+      setTimeout(() => {
+        if (auth.data == null) {
+          navigation.navigate('Login');
+        }
+        navigation.navigate('Profile');
+      }, 1000);
+    });
+  };
+
   return (
     <View style={{flex: 1}}>
       <View style={styles.container}>
@@ -23,12 +66,15 @@ export default function ResetView({navigation}) {
           />
           <Text style={MainStyle.headerText}>Reset Password</Text>
         </View>
+        {/* <Text>{email}</Text> */}
         <View style={styles.inputSection}>
           <Icon name="lock-closed-outline" size={16} />
           <TextInput
             style={styles.input}
             placeholder="New Password"
             underlineColorAndroid="transparent"
+            value={password}
+            onChangeText={value => setPassword(value)}
           />
         </View>
         <View style={styles.inputSection}>
@@ -37,13 +83,21 @@ export default function ResetView({navigation}) {
             style={styles.input}
             placeholder="Confirm New Password"
             underlineColorAndroid="transparent"
+            value={confirm}
+            onChangeText={value => setConfirm(value)}
           />
         </View>
       </View>
       <TouchableOpacity
         style={[AuthStyle.btn, {marginBottom: 32}]}
-        onPress={() => navigation.navigate('Login')}>
-        <Text style={AuthStyle.btnlabel}>Reset Password</Text>
+        onPress={formSubmit}>
+        <Text style={AuthStyle.btnlabel}>
+          {dataPass.isLoading ? (
+            <ActivityIndicator size="large" color="white" />
+          ) : (
+            'Change Password'
+          )}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -86,7 +140,6 @@ const styles = StyleSheet.create({
     minWidth: '70%',
     height: 40,
     borderColor: '#EFC81A',
-    color: '#EFC81A',
   },
   imageStyle: {
     padding: 10,

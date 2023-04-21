@@ -141,7 +141,11 @@ export default function EditProfileView({navigation}) {
           />
         </View>
         <View style={styles.tab}>
-          <Text style={styles.label}>Change Password</Text>
+          <Text
+            style={styles.label}
+            onPress={() => navigation.navigate('Reset')}>
+            Change Password
+          </Text>
         </View>
         {posted && <Text style={styles.label}>Edit Profile Successful!</Text>}
         <TouchableOpacity

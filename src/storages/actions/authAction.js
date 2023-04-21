@@ -48,6 +48,32 @@ export const requestOTP = data => async dispatch => {
     dispatch({type: 'REQUEST_OTP_ERROR'});
   }
 };
+export const confirmOTP = data => async dispatch => {
+  try {
+    dispatch({type: 'CONFIRM_OTP_PENDING'});
+    const result = await axios.post(url + '/users/otp/confirm', data);
+    // const user = result.data.data;
+    dispatch({type: 'CONFIRM_OTP_SUCCESS', payload: result.data});
+    console.log('CONFIRM OTP success');
+  } catch (err) {
+    console.log('CONFIRM OTP failed');
+    console.log(err);
+    dispatch({type: 'CONFIRM_OTP_ERROR'});
+  }
+};
+export const changePass = data => async dispatch => {
+  try {
+    dispatch({type: 'CHANGE_PW_PENDING'});
+    const result = await axios.post(url + '/users/resetPassword', data);
+    // const user = result.data.data;
+    dispatch({type: 'CHANGE_PW_SUCCESS', payload: result.data});
+    console.log('CONFIRM OTP success');
+  } catch (err) {
+    console.log('CONFIRM OTP failed');
+    console.log(err);
+    dispatch({type: 'CHANGE_PW_ERROR'});
+  }
+};
 export const verifyUser = data => async dispatch => {
   try {
     dispatch({type: 'VERIFY_PENDING'});

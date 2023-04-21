@@ -205,6 +205,13 @@ export default function MainNavigator() {
                 headerShown: false,
               }}
             />
+            <Stack.Screen
+              name="Reset"
+              component={ResetView}
+              options={{
+                headerShown: false,
+              }}
+            />
           </>
         )}
         {/* Main Group */}

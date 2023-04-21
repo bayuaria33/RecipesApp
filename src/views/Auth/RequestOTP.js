@@ -110,7 +110,6 @@ const styles = StyleSheet.create({
     minWidth: '70%',
     height: 40,
     borderColor: '#EFC81A',
-    color: '#EFC81A',
   },
   imageStyle: {
     padding: 10,
