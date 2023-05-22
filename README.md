@@ -55,6 +55,20 @@ RecipeApp is an Android app designed to exchange and discover recipes for cookin
 
 This web app was built with: React Native, React Navigation, ExpressJS, PostgreSQL, Redux, NodeJS, Axios, JWT, OneSignal
 
+<br></br>
+
+## Demo User Account
+<details>
+<summary>Show Demo Account</summary>
+
+
+**Email** : dxc80943@omeie.com
+
+**Password** : 123
+</details>
+
+<br></br>
+
 
 ## Link APK
 - [APK](https://github.com/bayuaria33/RecipesApp/tree/master/release)
